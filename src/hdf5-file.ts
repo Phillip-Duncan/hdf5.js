@@ -23,7 +23,7 @@ export class HDF5ExportFile {
 
     const symbolTable = new SymbolTable();
     symbolTable.setObjectHeaderAddress(BigInt(overheads));
-    symbolTable.write(array, 40);
+    symbolTable.write(array, 56);
     
     return array;
   }
