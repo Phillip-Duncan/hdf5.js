@@ -6,6 +6,7 @@ import { LinkMessage } from "./structures/header-messages/linkmessage.js";
 
 import { HDF5ExportFile } from "./hdf5-file.js";
 import { DataGroup } from "./datagroup.js";
+import { Dataset, Datatype } from "./dataset.js";
 
 export function export_hdf5() {
   /*const superblock = new SuperBlock();
@@ -15,6 +16,9 @@ export function export_hdf5() {
   superblock.write(array, 0);
   console.log(array);*/
   const datagroup = new DataGroup("cheese");
+
+  const dataset = new Dataset("data", [3.5, 2.5], [2], Datatype.FLOAT64);
+  datagroup.addDataset(dataset);
 
   const hdf5_exporter = new HDF5ExportFile(datagroup);
   const arrayBuffer = hdf5_exporter.write();

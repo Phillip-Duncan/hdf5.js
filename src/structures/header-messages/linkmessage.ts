@@ -19,7 +19,7 @@ export class LinkMessage extends Writeable {
     for (let i = 0; i < this.name.length; i++) {
       dataview.setUint8(offset + 4 + i, this.name.charCodeAt(i));
     }
-    dataview.setBigUint64(offset + 4 + this.name.length, this.address);
+    dataview.setBigUint64(offset + 4 + this.name.length, this.address, true);
 
     return 12 + this.name.length;
   }

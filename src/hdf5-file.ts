@@ -10,12 +10,11 @@ export class HDF5ExportFile {
 
   write(): ArrayBuffer {
     const overheads = 56 + 40; //superblock + symbol table
-    const totalLength = this.datagroup.getTotalLength() + overheads
-    + 12 + 8 + 12 + this.datagroup.name.length //headers
+    const totalLength = this.datagroup.getTotalLength() + overheads;
         
     const array = new ArrayBuffer(totalLength);
 
-    this.datagroup.writeDatasets(array, overheads);
+    this.datagroup.write(array, overheads);
 
     const superBlock = new SuperBlock();
     superBlock.setEndOfFileAddress(BigInt(totalLength));

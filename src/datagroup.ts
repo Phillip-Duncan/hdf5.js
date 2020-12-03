@@ -21,11 +21,26 @@ export class DataGroup {
   }
 
   getTotalLength(): number {
-    let totalLength = 0;
+    let totalLength = 24 + Math.ceil((12 + this.name.length) / 8) * 8;
     for (const dataset of this.datasets) {
       totalLength += dataset.getLength();
+      totalLength += 24 + Math.ceil((12 + dataset.name.length) / 8) * 8;
     }
     return totalLength;
+  }
+
+  write(arrayBuffer: ArrayBuffer, offset: number): number {
+    const linkMessage = new LinkMessage(this.name, BigInt(0));
+    const headerMessage = new HeaderMessage(6, 1, linkMessage);
+    const groupDataObject = new DataObject([headerMessage]);
+    const length = groupDataObject.getLength();
+    linkMessage.setAddress(BigInt(offset + length));
+    const realLength = groupDataObject.write(arrayBuffer, offset);
+    if (length != realLength) {
+      throw "Predicted length for datagroup headers != real length";
+    }
+    const dataLength = this.writeDatasets(arrayBuffer, offset + realLength);
+    return realLength + dataLength;
   }
 
   writeDatasets(arrayBuffer: ArrayBuffer, offset: number): number {

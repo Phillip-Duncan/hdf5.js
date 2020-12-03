@@ -11,7 +11,7 @@ export class Dataset {
    * @param dimensions Array of the size in each dimension. Length of this array represents the number of dimensions
    * @param datatype The type of data from the Datatype enum
    */
-  constructor(name, data, dimensions, datatype) {
+  constructor(name: string, data: any[], dimensions: number[], datatype: Datatype) {
     this.name = name;
     this.data = data;
     this.dimensions = dimensions;
