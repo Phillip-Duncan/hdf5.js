@@ -1,0 +1,24 @@
+{
+  "name": "hdf5.js",
+  "version": "1.0.0",
+  "description": "Extension of: [jsfive](https://github.com/usnistgov/jsfive)",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "run": "tsc && node dist/exporter.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Phillip-Duncan/hdf5.js.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Phillip-Duncan/hdf5.js/issues"
+  },
+  "homepage": "https://github.com/Phillip-Duncan/hdf5.js#readme",
+  "devDependencies": {
+    "typescript": "^4.1.2"
+  }
+}
