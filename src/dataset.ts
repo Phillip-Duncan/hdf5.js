@@ -48,8 +48,8 @@ export class Dataset {
     const dataLength = this.getLengthOfRawData();
     this.dataLayoutMessage.setDataSize(BigInt(dataLength));
 
-    this.dataObject.write(arrayBuffer, offset);
-    return this.writeRawData(arrayBuffer, offset+this.dataObject.getLength());
+    let dataObjectLength = this.dataObject.write(arrayBuffer, offset);
+    return this.writeRawData(arrayBuffer, offset+this.dataObject.getLength()) + dataObjectLength;
   }
 
   writeRawData(arrayBuffer: ArrayBuffer, offset: number): number {
