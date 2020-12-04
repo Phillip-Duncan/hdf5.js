@@ -1,9 +1,3 @@
-import { SuperBlock } from "./structures/superblock.js";
-import { SymbolTable } from "./structures/symboltable.js";
-import { DataObject } from "./structures/dataobject.js";
-
-import { LinkMessage } from "./structures/header-messages/linkmessage.js";
-
 import { HDF5ExportFile } from "./hdf5-file.js";
 import { DataGroup } from "./datagroup.js";
 import { Dataset, Datatype } from "./dataset.js";

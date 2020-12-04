@@ -1,6 +1,8 @@
 import { Dataset } from "./dataset.js";
 import { DataObject } from "./structures/dataobject.js";
 import { LinkMessage } from "./structures/header-messages/linkmessage.js";
+import { LinkInfoMessage } from "./structures/header-messages/linkinfomessage.js";
+import { GroupInfoMessage } from "./structures/header-messages/groupinfomessage.js";
 import { HeaderMessage } from "./structures/headermessage.js";
 
 export class DataGroup {
@@ -21,18 +23,24 @@ export class DataGroup {
   }
 
   getTotalLength(): number {
-    let totalLength = 24 + Math.ceil((12 + this.name.length) / 8) * 8;
+      //24 for 0x0002 and 0x000A
+      //24 for dataobject and 0x0006
+    let totalLength = 96 + Math.ceil((12 + this.name.length) / 8) * 8;
     for (const dataset of this.datasets) {
       totalLength += dataset.getLength();
-      totalLength += 24 + Math.ceil((12 + dataset.name.length) / 8) * 8;
+      totalLength += 48 + Math.ceil((12 + dataset.name.length) / 8) * 8;
     }
     return totalLength;
   }
 
   write(arrayBuffer: ArrayBuffer, offset: number): number {
+    const linkInfoHeader = new HeaderMessage(2, 0, new LinkInfoMessage());
+    const groupInfoHeader = new HeaderMessage(0x0A, 0, new GroupInfoMessage());
+
     const linkMessage = new LinkMessage(this.name, BigInt(0));
-    const headerMessage = new HeaderMessage(6, 1, linkMessage);
-    const groupDataObject = new DataObject([headerMessage]);
+    const linkMessageHeader = new HeaderMessage(6, 1, linkMessage);
+
+    const groupDataObject = new DataObject([linkInfoHeader, groupInfoHeader, linkMessageHeader]);
     const length = groupDataObject.getLength();
     linkMessage.setAddress(BigInt(offset + length));
     const realLength = groupDataObject.write(arrayBuffer, offset);
@@ -44,8 +52,11 @@ export class DataGroup {
   }
 
   writeDatasets(arrayBuffer: ArrayBuffer, offset: number): number {
+    const linkInfoHeader = new HeaderMessage(2, 0, new LinkInfoMessage());
+    const groupInfoHeader = new HeaderMessage(0x0A, 0, new GroupInfoMessage());
+
     const linkMessages = [] as { dataset: Dataset; linkMessage: LinkMessage }[];
-    const headers = [] as HeaderMessage[];
+    const headers = [linkInfoHeader, groupInfoHeader] as HeaderMessage[];
     for (const dataset of this.datasets) {
       const linkMessage = new LinkMessage(dataset.name, BigInt(0));
       const message = new HeaderMessage(6, 1, linkMessage);

@@ -1,8 +1,16 @@
+import { DataObject } from "./structures/dataobject.js";
+import { HeaderMessage } from "./structures/headermessage.js";
+import { DataspaceMessage } from "./structures/header-messages/dataspacemessage.js";
+import { DatatypeMessage } from "./structures/header-messages/datatypemessage.js";
+import { LinkInfoMessage } from "./structures/header-messages/linkinfomessage.js";
+import { GroupInfoMessage } from "./structures/header-messages/groupinfomessage.js";
+
 export class Dataset {
   name: string;
   data: any[];
   dimensions: number[];
   datatype: Datatype;
+  dataObject: DataObject;
 
   /**
    * Construct a dataset
@@ -16,11 +24,24 @@ export class Dataset {
     this.data = data;
     this.dimensions = dimensions;
     this.datatype = datatype;
+
+    /*const linkInfoHeader = new HeaderMessage(2, 0, new LinkInfoMessage());
+    const groupInfoHeader = new HeaderMessage(0x0A, 0, new GroupInfoMessage());*/
+    
+    const dataspaceMessageHeader = new DataspaceMessage(this.dimensions);
+    const dataspaceMessageHeaderMessage = new HeaderMessage(1, 0, dataspaceMessageHeader);
+
+    const datatypeMessageHeader = new DatatypeMessage(this.datatype);
+    const datatypeMessageHeaderMessage = new HeaderMessage(3, 1, datatypeMessageHeader);
+
+    this.dataObject = new DataObject([/*linkInfoHeader, groupInfoHeader, */dataspaceMessageHeaderMessage, datatypeMessageHeaderMessage]);
   }
 
   write(arrayBuffer: ArrayBuffer, offset: number): number {
-    //TODO write Data object and appropriate headers
-    return this.writeRawData(arrayBuffer, offset);
+    // TODO set offset to data address
+
+    this.dataObject.write(arrayBuffer, offset);
+    return this.writeRawData(arrayBuffer, offset+this.dataObject.getLength());
   }
 
   writeRawData(arrayBuffer: ArrayBuffer, offset: number): number {
@@ -73,8 +94,7 @@ export class Dataset {
   }
 
   getLength(): number {
-    //TODO add headers
-    return this.getLengthOfRawData();
+    return this.getLengthOfRawData() + this.dataObject.getLength();
   }
 
   getLengthOfRawData(): number {
