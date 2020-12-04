@@ -2,8 +2,8 @@ import { DataObject } from "./structures/dataobject.js";
 import { HeaderMessage } from "./structures/headermessage.js";
 import { DataspaceMessage } from "./structures/header-messages/dataspacemessage.js";
 import { DatatypeMessage } from "./structures/header-messages/datatypemessage.js";
-import { LinkInfoMessage } from "./structures/header-messages/linkinfomessage.js";
-import { GroupInfoMessage } from "./structures/header-messages/groupinfomessage.js";
+import { DataStorageMessage } from "./structures/header-messages/datastoragemessage.js";
+import { DataLayoutMessage } from "./structures/header-messages/datalayoutmessage.js";
 
 export class Dataset {
   name: string;
@@ -11,6 +11,7 @@ export class Dataset {
   dimensions: number[];
   datatype: Datatype;
   dataObject: DataObject;
+  dataLayoutMessage: DataLayoutMessage;
 
   /**
    * Construct a dataset
@@ -31,11 +32,21 @@ export class Dataset {
     const datatypeMessageHeader = new DatatypeMessage(this.datatype);
     const datatypeMessageHeaderMessage = new HeaderMessage(3, 1, datatypeMessageHeader);
 
-    this.dataObject = new DataObject([dataspaceMessageHeaderMessage, datatypeMessageHeaderMessage]);
+    const datastorageMessageHeaderMessage = new HeaderMessage(0x05, 0, new DataStorageMessage());
+
+    this.dataLayoutMessage = new DataLayoutMessage();
+    const dataLayoutMessageHeader = new HeaderMessage(0x08, 0, this.dataLayoutMessage);
+
+    this.dataObject = new DataObject([dataspaceMessageHeaderMessage, 
+      datatypeMessageHeaderMessage, datastorageMessageHeaderMessage,
+      dataLayoutMessageHeader]);
   }
 
   write(arrayBuffer: ArrayBuffer, offset: number): number {
-    // TODO set offset to data address
+    const dataOffset = offset + this.dataObject.getLength();
+    this.dataLayoutMessage.setOffsetToData(BigInt(dataOffset));
+    const dataLength = this.getLengthOfRawData();
+    this.dataLayoutMessage.setDataSize(BigInt(dataLength));
 
     this.dataObject.write(arrayBuffer, offset);
     return this.writeRawData(arrayBuffer, offset+this.dataObject.getLength());
