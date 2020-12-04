@@ -3,12 +3,6 @@ import { DataGroup } from "./datagroup.js";
 import { Dataset, Datatype } from "./dataset.js";
 
 export function export_hdf5() {
-  /*const superblock = new SuperBlock();
-  superblock.setEndOfFileAddress(BigInt("0x69007000710072"));
-
-  const array = new ArrayBuffer(56);
-  superblock.write(array, 0);
-  console.log(array);*/
   const datagroup = new DataGroup("cheese");
 
   const dataset = new Dataset("data", [3.5, 2.5], [2], Datatype.FLOAT64);
