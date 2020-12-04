@@ -25,16 +25,13 @@ export class Dataset {
     this.dimensions = dimensions;
     this.datatype = datatype;
 
-    /*const linkInfoHeader = new HeaderMessage(2, 0, new LinkInfoMessage());
-    const groupInfoHeader = new HeaderMessage(0x0A, 0, new GroupInfoMessage());*/
-    
     const dataspaceMessageHeader = new DataspaceMessage(this.dimensions);
     const dataspaceMessageHeaderMessage = new HeaderMessage(1, 0, dataspaceMessageHeader);
 
     const datatypeMessageHeader = new DatatypeMessage(this.datatype);
     const datatypeMessageHeaderMessage = new HeaderMessage(3, 1, datatypeMessageHeader);
 
-    this.dataObject = new DataObject([/*linkInfoHeader, groupInfoHeader, */dataspaceMessageHeaderMessage, datatypeMessageHeaderMessage]);
+    this.dataObject = new DataObject([dataspaceMessageHeaderMessage, datatypeMessageHeaderMessage]);
   }
 
   write(arrayBuffer: ArrayBuffer, offset: number): number {
