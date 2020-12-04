@@ -11,7 +11,7 @@ export class DatatypeMessage extends Writeable {
 
   write(arrayBuffer: ArrayBuffer, offset: number): number {
     const dataview = new DataView(arrayBuffer);
-    dataview.setUint8(offset, 2); //version 2
+    dataview.setUint8(offset, 0x11); //version 1, floating point
     switch (this.dataType) {
       case Datatype.FLOAT64:
         dataview.setUint8(offset + 1, 0x20);

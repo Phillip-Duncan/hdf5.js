@@ -5,7 +5,7 @@ import { Dataset, Datatype } from "./dataset.js";
 export function export_hdf5() {
   const datagroup = new DataGroup("cheese");
 
-  const dataset = new Dataset("data", [3.5, 2.5], [2], Datatype.FLOAT64);
+  const dataset = new Dataset("data", [3.5, 2.5], [1, 2], Datatype.FLOAT64);
   datagroup.addDataset(dataset);
 
   const hdf5_exporter = new HDF5ExportFile(datagroup);

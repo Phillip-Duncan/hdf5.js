@@ -14,8 +14,8 @@ export class DataspaceMessage extends Writeable {
     dataview.setUint8(offset+1, this.dimensionSizes.length);
     dataview.setUint8(offset+2, 1);
     for (let dimensionId = 0; dimensionId < this.dimensionSizes.length; dimensionId++) {
-        dataview.setBigUint64(offset+8+(dimensionId * 8), BigInt(this.dimensionSizes[dimensionId]));
-        dataview.setBigUint64(offset+8+(this.dimensionSizes.length*8)+(dimensionId * 8), BigInt(this.dimensionSizes[dimensionId]));
+        dataview.setBigUint64(offset+8+(dimensionId * 8), BigInt(this.dimensionSizes[dimensionId]), true);
+        dataview.setBigUint64(offset+8+(this.dimensionSizes.length*8)+(dimensionId * 8), BigInt(this.dimensionSizes[dimensionId]), true);
     }
     return 8 + 16 * this.dimensionSizes.length;
   }

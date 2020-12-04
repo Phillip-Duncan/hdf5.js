@@ -32,7 +32,7 @@ export class Dataset {
     const datatypeMessageHeader = new DatatypeMessage(this.datatype);
     const datatypeMessageHeaderMessage = new HeaderMessage(3, 1, datatypeMessageHeader);
 
-    const datastorageMessageHeaderMessage = new HeaderMessage(0x05, 0, new DataStorageMessage());
+    const datastorageMessageHeaderMessage = new HeaderMessage(0x05, 1, new DataStorageMessage());
 
     this.dataLayoutMessage = new DataLayoutMessage();
     const dataLayoutMessageHeader = new HeaderMessage(0x08, 0, this.dataLayoutMessage);
