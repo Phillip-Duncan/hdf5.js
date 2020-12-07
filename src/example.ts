@@ -22,8 +22,8 @@ export function export_hdf5() {
   const dataset5 = new Dataset("catslikemilk", [-10, 11, 12, 13, 14, 15, 16, 17, 18], [1, 3, 3], Datatype.FLOAT64);
   datagroup2.addDataset(dataset5);
 
-  /*const dataset6 = new Dataset("numlegs", [4], [1, 1], Datatype.FLOAT64);
-  datagroup2.addDataset(dataset6);*/
+  const dataset6 = new Dataset("numlegs", [4], [1, 1], Datatype.FLOAT64);
+  datagroup2.addDataset(dataset6);
 
   const datagroups = [datagroup, datagroup2];
 
