@@ -40,6 +40,16 @@ export class Dataset {
     this.dataObject = new DataObject([dataspaceMessageHeaderMessage, 
       datatypeMessageHeaderMessage, datastorageMessageHeaderMessage,
       dataLayoutMessageHeader]);
+
+
+    //check array dimensions
+    let productOfDimensions = 1;
+    for (let i = 0; i < dimensions.length; i++) {
+      productOfDimensions *= dimensions[i];
+    }
+    if (productOfDimensions != data.length) {
+      throw "Inconsistent data length with dimensions for dataset '"+name+"'";
+    }
   }
 
   write(arrayBuffer: ArrayBuffer, offset: number): number {
