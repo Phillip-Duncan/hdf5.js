@@ -17,7 +17,17 @@ export function export_hdf5() {
   const dataset4 = new Dataset("hardness", [10], [1, 1], Datatype.FLOAT64);
   datagroup.addDataset(dataset4);
 
-  const hdf5_exporter = new HDF5ExportFile(datagroup);
+  const datagroup2 = new DataGroup("cats");
+
+  const dataset5 = new Dataset("catslikemilk", [-10, 11, 12, 13, 14, 15, 16, 17, 18], [1, 3, 3], Datatype.FLOAT64);
+  datagroup2.addDataset(dataset5);
+
+  /*const dataset6 = new Dataset("numlegs", [4], [1, 1], Datatype.FLOAT64);
+  datagroup2.addDataset(dataset6);*/
+
+  const datagroups = [datagroup, datagroup2];
+
+  const hdf5_exporter = new HDF5ExportFile(datagroups);
   const arrayBuffer = hdf5_exporter.write();
   return arrayBuffer;
 }
