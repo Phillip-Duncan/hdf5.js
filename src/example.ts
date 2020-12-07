@@ -25,7 +25,23 @@ export function export_hdf5() {
   const dataset6 = new Dataset("numlegs", [4], [1, 1], Datatype.FLOAT64);
   datagroup2.addDataset(dataset6);
 
-  const datagroups = [datagroup, datagroup2];
+  const datagroupDatatypes = new DataGroup("datatype-tests");
+
+  const datasetDatatypeInt8 = new Dataset("int8", [0, 1, -128, -127, 127, 128, 129, 255, 256], [1, 9], Datatype.INT8);
+  datagroupDatatypes.addDataset(datasetDatatypeInt8);
+
+  const datasetDatatypeUInt8 = new Dataset("uint8", [0, 1, -128, -127, 127, 128, 129, 255, 256], [1, 9], Datatype.UINT8);
+  datagroupDatatypes.addDataset(datasetDatatypeUInt8);
+
+  const datasetDatatypeInt16 = new Dataset("int16", [0, 1, 32767, -32767, 32768, -32768, 65536, 65535], [1, 8], Datatype.INT16);
+  datagroupDatatypes.addDataset(datasetDatatypeInt16);
+
+  const datasetDatatypeUInt16 = new Dataset("uint16", [0, 1, 32767, -32767, 32768, -32768, 65536, 65535], [1, 8], Datatype.UINT16);
+  datagroupDatatypes.addDataset(datasetDatatypeUInt16);
+
+  const datasetDatatypeString = new Dataset("string", ["hello", "world", "I", "am", "Alex", "How are you?"], [2, 3], Datatype.STRING);
+  datagroupDatatypes.addDataset(datasetDatatypeString);
+  const datagroups = [datagroup, datagroup2, datagroupDatatypes];
 
   const hdf5_exporter = new HDF5ExportFile(datagroups);
   const arrayBuffer = hdf5_exporter.write();

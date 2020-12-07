@@ -12,6 +12,7 @@ export class Dataset {
   datatype: Datatype;
   dataObject: DataObject;
   dataLayoutMessage: DataLayoutMessage;
+  longestString: number;
 
   /**
    * Construct a dataset
@@ -50,6 +51,14 @@ export class Dataset {
     if (productOfDimensions != data.length) {
       throw "Inconsistent data length with dimensions for dataset '"+name+"'";
     }
+
+    if (this.datatype == Datatype.STRING) {
+      this.longestString = 0;
+      for (const value of this.data as string[]) {
+        this.longestString = Math.max(value.length, this.longestString);
+      }
+      datatypeMessageHeader.setLongestString(this.longestString);
+    }
   }
 
   write(arrayBuffer: ArrayBuffer, offset: number): number {
@@ -68,7 +77,7 @@ export class Dataset {
     for (const object of this.data) {
       offset2 += this._writeOneRawData(dataView, offset + offset2, object);
     }
-    return offset2;
+    return Math.ceil(offset2 / 8) * 8; //padding so next headers align with 8 bytes
   }
 
   _writeOneRawData(dataView: DataView, offset: number, rawdata: any): number {
@@ -104,8 +113,7 @@ export class Dataset {
         for (let i = 0; i < (rawdata as string).length; i++) {
           dataView.setUint8(offset + i, (rawdata as string).charCodeAt(i));
         }
-        dataView.setUint8(offset + (rawdata as string).length, 0); //null terminator
-        return (rawdata as string).length + 1;
+        return this.longestString + 1;
       default:
         return 0;
     }
@@ -116,6 +124,10 @@ export class Dataset {
   }
 
   getLengthOfRawData(): number {
+    return Math.ceil(this.getRealLengthOfRawData() / 8) * 8;
+  }
+
+  getRealLengthOfRawData(): number {
     switch (this.datatype) {
       case Datatype.INT8:
       case Datatype.UINT8:
@@ -134,12 +146,7 @@ export class Dataset {
         break;
     }
     if (this.datatype == Datatype.STRING) {
-      let total = 0;
-      for (const value of this.data as string[]) {
-        total += value.length;
-        total += 1; //null terminator
-      }
-      return total;
+      return this.data.length * (this.longestString+1);
     } else {
       return 0;
     }
